@@ -1,7 +1,7 @@
 # iOS-KnowledgeC-StructuredMetadata-Bplists
 Scripts to extract compound bplists in the iOS -> KnowledgeC.db -> structuredmetadata table.
 
-
+![alt text](run.PNG "Usage example")  
 
 Usage: 
 1. Python 3
