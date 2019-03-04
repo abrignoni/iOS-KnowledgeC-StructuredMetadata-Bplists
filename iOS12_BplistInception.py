@@ -107,13 +107,13 @@ for filename in glob.glob('./'+time+'/clean/*.bplist'):
 	#NSstartDate
 	h.write('<tr>')
 	h.write('<td>NSstartDate</td>')
-	h.write('<td>'+str(NSstartDate)+'</td>')
+	h.write('<td>'+str(NSstartDate)+' Z</td>')
 	h.write('</tr>')
 	
 	#NSsendDate
 	h.write('<tr>')
 	h.write('<td>NSendDate</td>')
-	h.write('<td>'+str(NSendDate)+'</td>')
+	h.write('<td>'+str(NSendDate)+' Z</td>')
 	h.write('</tr>')
 	
 	#NSduration
