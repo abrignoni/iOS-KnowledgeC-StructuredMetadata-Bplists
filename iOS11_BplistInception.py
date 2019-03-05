@@ -3,24 +3,44 @@ import ccl_bplist
 import plistlib
 import io
 import sqlite3
-import datetime
 import os
 import glob
+import argparse
+import datetime
+
+parser = argparse.ArgumentParser()
+parser.add_argument("db", nargs='?', help="database")
+args = parser.parse_args()
+
+if args.db:
+	database = args.db
+else:
+	database = 'knowledgec.db'
+
+try:
+   f = open(database)
+   f.close()
+except IOError as e:
+   print (database + ': No file found')
+   sys.exit()
+
+extension = '.bplist'
 
 #create directories
-time = str(int(datetime.datetime.now().timestamp()))
+foldername = str(int(datetime.datetime.now().timestamp()))
+
 
 path = os.getcwd()
 try:  
-	outpath = path + "/" + time
+	outpath = path + "/" + foldername
 	os.mkdir(outpath)
 	os.mkdir(outpath+"/clean")
 	os.mkdir(outpath+"/dirty")
 except OSError:  
 	print("Error making directories")
-
+	
 #connect sqlite databases
-db = sqlite3.connect('knowledgeC.db')
+db = sqlite3.connect(database)
 cursor = db.cursor()
 
 #variable initializations
@@ -42,34 +62,35 @@ all_rows = cursor.fetchall()
 
 for row in all_rows:
 	pkv = str(row[0])
+	pkvplist = pkv+extension
 	f = row[1]
 	intentclass = str(row[2])
 	intententverb = str(row[3])
-	output_file = open('./'+time+'/dirty/D_Z_PK'+pkv+'.bplist', 'wb')#export dirty from DB
+	output_file = open('./'+foldername+'/dirty/D_Z_PK'+pkvplist, 'wb') #export dirty from DB
 	output_file.write(f)
 	output_file.close()	
 
-	g = open('./'+time+'/dirty/D_Z_PK'+pkv+'.bplist', 'rb')
+	g = open('./'+foldername+'/dirty/D_Z_PK'+pkvplist, 'rb')
 	plistg = ccl_bplist.load(g)
 	ns_keyed_archiver_obj = ccl_bplist.deserialise_NsKeyedArchiver(plistg)
 	dirtcount = dirtcount+1
 	
-	binfile = open('./'+time+'/clean/C_Z_PK'+pkv+'.bplist', 'wb')#write to clean
+	binfile = open('./'+foldername+'/clean/C_Z_PK'+pkvplist, 'wb')#write to clean
 	binfile.write(ns_keyed_archiver_obj)
 	binfile.close()
 	#add to dictionaries
-	intentc['C_Z_PK'+pkv+'.bplist'] = intentclass
-	intentv['C_Z_PK'+pkv+'.bplist'] = intententverb
+	intentc['C_Z_PK'+pkvplist] = intentclass
+	intentv['C_Z_PK'+pkvplist] = intententverb
 	
 	cleancount = cleancount+1
 
-h = open('./'+time+'/Report.html', 'w')	
+h = open('./'+foldername+'/Report.html', 'w')	
 h.write('<html><body>')
 h.write('<h2>iOS 11 - KnowledgeC ZSTRUCTUREDMETADATA bplist report</h2>')
 h.write ('<style> table, th, td {border: 1px solid black; border-collapse: collapse;}</style>')
 h.write('<br />')
 
-for filename in glob.glob('./'+time+'/clean/*.bplist'):	
+for filename in glob.glob('./'+foldername+'/clean/*.bplist'):	
 	p = open(filename, 'rb')
 	cfilename = os.path.basename(filename)
 	plist = ccl_bplist.load(p)
@@ -127,6 +148,11 @@ for filename in glob.glob('./'+time+'/clean/*.bplist'):
 	h.write('<td>NSdata</td>')
 	h.write('<td>'+str(NSdata)+'</td>')
 	h.write('</tr>')
+
+	h.write('<tr>')
+	h.write('<td>NSdata - EasyRead</td>')
+	h.write('<td>'+str(NSdata).replace('\\n', '<br>')+'</td>')
+	h.write('</tr>')
 	
 	h.write('<table>')
 	h.write('<br />')
@@ -148,3 +174,4 @@ print("Exported bplists (dirty): "+str(dirtcount))
 print("Exported bplists (clean): "+str(cleancount))
 print("")
 print("Triage report completed. See Reports.html.")
+
