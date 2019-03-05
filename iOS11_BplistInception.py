@@ -7,7 +7,6 @@ import os
 import glob
 import argparse
 import datetime
-from time import localtime, strftime
 
 parser = argparse.ArgumentParser()
 parser.add_argument("db", nargs='?', help="database")
@@ -18,10 +17,18 @@ if args.db:
 else:
 	database = 'knowledgec.db'
 
+try:
+   f = open(database)
+   f.close()
+except IOError as e:
+   print (database + ': No file found')
+   sys.exit()
+
 extension = '.bplist'
-	
+
 #create directories
 foldername = str(int(datetime.datetime.now().timestamp()))
+
 
 path = os.getcwd()
 try:  
@@ -31,7 +38,7 @@ try:
 	os.mkdir(outpath+"/dirty")
 except OSError:  
 	print("Error making directories")
-
+	
 #connect sqlite databases
 db = sqlite3.connect(database)
 cursor = db.cursor()
@@ -141,6 +148,11 @@ for filename in glob.glob('./'+foldername+'/clean/*.bplist'):
 	h.write('<td>NSdata</td>')
 	h.write('<td>'+str(NSdata)+'</td>')
 	h.write('</tr>')
+
+	h.write('<tr>')
+	h.write('<td>NSdata - EasyRead</td>')
+	h.write('<td>'+str(NSdata).replace('\\n', '<br>')+'</td>')
+	h.write('</tr>')
 	
 	h.write('<table>')
 	h.write('<br />')
@@ -162,3 +174,4 @@ print("Exported bplists (dirty): "+str(dirtcount))
 print("Exported bplists (clean): "+str(cleancount))
 print("")
 print("Triage report completed. See Reports.html.")
+
