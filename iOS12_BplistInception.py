@@ -89,6 +89,7 @@ for filename in glob.glob('./'+time+'/clean/*.bplist'):
 	NSstartDate = ccl_bplist.convert_NSDate((ns_keyed_archiver_obj["root"]["dateInterval"]["NS.startDate"]))
 	NSendDate = ccl_bplist.convert_NSDate((ns_keyed_archiver_obj["root"]["dateInterval"]["NS.endDate"]))
 	NSduration = ns_keyed_archiver_obj["root"]["dateInterval"]["NS.duration"]
+	Siri = ns_keyed_archiver_obj["root"]["_donatedBySiri"]
 	
 	h.write(cfilename)
 	h.write('<br />')
@@ -102,6 +103,12 @@ for filename in glob.glob('./'+time+'/clean/*.bplist'):
 	h.write('<tr>')
 	h.write('<th>Data type</th>')
 	h.write('<th>Value</th>')
+	h.write('</tr>')
+	
+	#Donated by Siri
+	h.write('<tr>')
+	h.write('<td>Siri</td>')
+	h.write('<td>'+str(Siri)+'</td>')
 	h.write('</tr>')
 	
 	#NSstartDate
