@@ -5,8 +5,8 @@ import io
 import sqlite3
 import os
 import glob
-import argparse
 import datetime
+import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("db", nargs='?', help="database")
@@ -90,7 +90,7 @@ h.write('<h2>iOS 11 - KnowledgeC ZSTRUCTUREDMETADATA bplist report</h2>')
 h.write ('<style> table, th, td {border: 1px solid black; border-collapse: collapse;}</style>')
 h.write('<br />')
 
-for filename in glob.glob('./'+foldername+'/clean/*.bplist'):	
+for filename in glob.glob('./'+foldername+'/clean/*'+extension):	
 	p = open(filename, 'rb')
 	cfilename = os.path.basename(filename)
 	plist = ccl_bplist.load(p)
@@ -156,6 +156,7 @@ for filename in glob.glob('./'+foldername+'/clean/*.bplist'):
 	h.write('<td>'+str(NSdata)+'</td>')
 	h.write('</tr>')
 
+	#NSdata better formatting
 	h.write('<tr>')
 	h.write('<td>NSdata - EasyRead</td>')
 	h.write('<td>'+str(NSdata).replace('\\n', '<br>')+'</td>')
