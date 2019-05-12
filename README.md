@@ -17,3 +17,5 @@ python ios_bplistinception.py /path/to/knowledgec.db iosversion [-d false]
 By default the tool will dump out the nsdata sections of the clean plists, you can turn this off with -d false, but I don't know why you would want to do that.
 
 License: free to use etc, but if you're going to incorporate this into your paid tool and weren't before you read this code or the accompanying post please let me know or give credit.
+
+## I'd also suggest carving for plists in the database if you can. Reach out to @phillmoore if you want assistance with this. I have a script or two, but they're very rusty
